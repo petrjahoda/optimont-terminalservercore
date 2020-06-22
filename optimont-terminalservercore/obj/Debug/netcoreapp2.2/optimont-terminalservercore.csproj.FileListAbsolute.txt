@@ -1,0 +1,11 @@
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/bin/Debug/netcoreapp2.2/optimont-terminalservercore.deps.json
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/bin/Debug/netcoreapp2.2/optimont-terminalservercore.runtimeconfig.json
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/bin/Debug/netcoreapp2.2/optimont-terminalservercore.runtimeconfig.dev.json
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/bin/Debug/netcoreapp2.2/optimont-terminalservercore.dll
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/bin/Debug/netcoreapp2.2/optimont-terminalservercore.pdb
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/Debug/netcoreapp2.2/optimont-terminalservercore.csprojAssemblyReference.cache
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/Debug/netcoreapp2.2/optimont-terminalservercore.csproj.CoreCompileInputs.cache
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/Debug/netcoreapp2.2/optimont-terminalservercore.AssemblyInfoInputs.cache
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/Debug/netcoreapp2.2/optimont-terminalservercore.AssemblyInfo.cs
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/Debug/netcoreapp2.2/optimont-terminalservercore.dll
+/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/Debug/netcoreapp2.2/optimont-terminalservercore.pdb

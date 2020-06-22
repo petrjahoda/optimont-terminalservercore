@@ -1,0 +1,63 @@
+﻿{
+  "version": "1.0.0",
+  "restore": {
+    "projectUniqueName": "/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/optimont-terminalservercore.csproj",
+    "projectName": "optimont-terminalservercore",
+    "projectPath": "/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/optimont-terminalservercore.csproj",
+    "outputPath": "/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/",
+    "projectStyle": "PackageReference",
+    "originalTargetFrameworks": [
+      "netcoreapp2.2"
+    ],
+    "sources": {
+      "https://api.nuget.org/v3/index.json": {}
+    },
+    "frameworks": {
+      "netcoreapp2.2": {
+        "projectReferences": {}
+      }
+    },
+    "warningProperties": {
+      "warnAsError": [
+        "NU1605"
+      ]
+    }
+  },
+  "frameworks": {
+    "netcoreapp2.2": {
+      "dependencies": {
+        "Microsoft.Extensions.Configuration.Json": {
+          "target": "Package",
+          "version": "[3.1.5, )"
+        },
+        "Microsoft.Extensions.Logging": {
+          "target": "Package",
+          "version": "[3.1.5, )"
+        },
+        "Microsoft.NETCore.App": {
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[2.2.0, )",
+          "autoReferenced": true
+        },
+        "MySqlConnector": {
+          "target": "Package",
+          "version": "[0.69.3, )"
+        },
+        "Newtonsoft.Json": {
+          "target": "Package",
+          "version": "[12.0.3, )"
+        },
+        "Serilog.Extensions.Logging.File": {
+          "target": "Package",
+          "version": "[2.0.0, )"
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    }
+  }
+}

@@ -1,0 +1,5 @@
+2020-06-22T09:01:31.4785470+02:00  [INF] 06/22/2020 09:01:31 [ MAIN ] --INF-- Program built at: 2020.2.1.14 (eaad8810)
+2020-06-22T09:01:31.6750680+02:00  [INF] 06/22/2020 09:01:31 [ MAIN ] --INF-- Config file created. (18a6de8c)
+2020-06-22T09:01:31.6754440+02:00  [INF] 06/22/2020 09:01:31 [ MAIN ] --INF-- Backup file created. (a26b5519)
+2020-06-22T09:01:31.7443310+02:00  [INF] 06/22/2020 09:01:31 [ MAIN ] --INF-- Config loaded from file for customer: unactivated software (6844ff34)
+2020-06-22T09:01:33.2260410+02:00  [INF] 06/22/2020 09:01:33 [ MAIN ] --ERR-- Cannot send email: Computer: petrs-mbp, User: petrjahoda, Program started at 06/22/2020 09:01:31, Version 2020.2.1.14: Mailbox unavailable. The server response was: 5.1.0 nGSRj0gJV0vIlnGSTj0XTN authentication failed (d1153156)
