@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
@@ -317,7 +317,6 @@ namespace terminalServerCore {
                     $"UPDATE `zapsi2`.`terminal_input_order` t SET t.`DTE` = '{dateToInsert}', t.Interval = TIME_TO_SEC(timediff('{dateToInsert}', DTS)), t.`Count`={count}, t.Fail={nokCount}, t.averageCycle={averageCycleToInsert}, t.`Note`='{note}' WHERE t.`DTE` is NULL and DeviceID={DeviceOid};" +
                     $"UPDATE zapsi2.terminal_input_login t set t.DTE = '{dateToInsert}', t.Interval = TIME_TO_SEC(timediff('{dateToInsert}', DTS)) where t.DTE is null and t.DeviceId={DeviceOid};";
                 try {
-                    Console.WriteLine(command.CommandText);
                     command.ExecuteNonQuery();
                 } catch (Exception error) {
                     LogError(
@@ -1148,6 +1147,95 @@ namespace terminalServerCore {
                 } finally {
                     insertCommand.Dispose();
                 }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+        }
+
+        public bool CheckIfLastOrderWasClosedOffline(ILogger logger) {
+            var lastOrderWasClosedOffline = false;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery =
+                    $"SELECT * from zapsi2.terminal_input_order where DeviceID={DeviceOid} order by OID desc limit 1";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        var note = Convert.ToString(reader["Note"]);
+                        if (note == "Poweroff closed") {
+                            lastOrderWasClosedOffline = true;
+                        }
+                    }
+
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem checking last poweroff order: " + error.Message + selectQuery,
+                        logger);
+                } finally {
+                    command.Dispose();
+                }
+
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            LogInfo("[ " + Name + " ] --INF-- Workplace has last order poweroff closed: " + lastOrderWasClosedOffline, logger);
+
+            return lastOrderWasClosedOffline;
+        }
+
+        public void CreatePoweroffOrderForWorkplace(ILogger logger) {
+            var orderID = 101;
+            var userID = 1;
+            var workplaceModeID = 1;
+            var myDate = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery =
+                    $"SELECT * from zapsi2.terminal_input_order where DeviceID={DeviceOid} and Note like '%Poweroff closed%' order by OID desc limit 1";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        orderID = Convert.ToInt32(reader["OrderID"]);
+                        userID = Convert.ToInt32(reader["UserID"]);
+                        workplaceModeID  = Convert.ToInt32(reader["WorkplaceModeID"]);
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem getting data from last poweroff order: " + error.Message + selectQuery,
+                        logger);
+                } finally {
+                    command.Dispose();
+                }
+                
+                var insertCommand = connection.CreateCommand();
+                insertCommand.CommandText =
+                    $"INSERT INTO `zapsi2`.`terminal_input_order` (`DTS`, `DTE`, `OrderID`, `UserID`, `DeviceID`, `Interval`, `Count`, `Fail`, `AverageCycle`, `WorkerCount`, `WorkplaceModeID`, `Note`, `WorkshiftID`) VALUES ('{myDate}', NULL, {orderID}, {userID}, {DeviceOid}, 0, DEFAULT, DEFAULT, DEFAULT, DEFAULT, {workplaceModeID}, 'NULL', {ActualWorkshiftId})";
+                try {
+                    insertCommand.ExecuteNonQuery();
+                } catch (Exception error) {
+                    LogError(
+                        "[ MAIN ] --ERR-- problem inserting terminal input order into database: " + error.Message +
+                        insertCommand.CommandText, logger);
+                } finally {
+                    insertCommand.Dispose();
+                }
+                
 
                 connection.Close();
             } catch (Exception error) {

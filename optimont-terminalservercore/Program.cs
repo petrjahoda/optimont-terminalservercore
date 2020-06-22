@@ -60,7 +60,6 @@ namespace terminalServerCore {
                 LogInfo("[ MAIN ] --INF-- Program built at: " + BuildDate, logger);
                 CreateConfigFileIfNotExists(logger);
                 LoadSettingsFromConfigFile(logger);
-                SendEmail("Computer: " + Environment.MachineName + ", User: " + Environment.UserName + ", Program started at " + DateTime.Now + ", Version " + BuildDate, logger);
                 var timer = new System.Timers.Timer(InitialDownloadValue);
                 timer.Elapsed += (sender, e) => {
                     timer.Interval = Convert.ToDouble(_downloadEvery);
@@ -411,7 +410,6 @@ namespace terminalServerCore {
 
                 while (_databaseIsOnline && _loopCanRun && _systemIsActivated) {
                     LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Inside loop started for " + workplace.Name, logger);
-
                     workplace.AddProductionPort(logger);
                     workplace.AddCountPort(logger);
                     workplace.AddFailPort(logger);
@@ -424,9 +422,14 @@ namespace terminalServerCore {
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace in production", logger);
                         var workplaceHasActiveIdle = workplace.CheckIfWorkplaceHasActivedIdle(logger);
                         var workplaceHasActiveOrder = workplace.CheckIfWorkplaceHasActiveOrder(logger);
+                        var lastOrderWasClosedOffline = workplace.CheckIfLastOrderWasClosedOffline(logger);
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace has active order: " + workplaceHasActiveOrder, logger);
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace has active idle: " + workplaceHasActiveIdle, logger);
-                        if (!workplaceHasActiveOrder) {
+                        if (!workplaceHasActiveOrder && lastOrderWasClosedOffline) {
+                            LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Creating order from last poweroff closed order", logger);
+                            workplace.CreatePoweroffOrderForWorkplace(logger);
+                            LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_order created", logger);
+                        } else if (!workplaceHasActiveOrder) {
                             LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Creating order", logger);
                             workplace.CreateOrderForWorkplace(logger);
                             LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_order created", logger);
@@ -448,10 +451,14 @@ namespace terminalServerCore {
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace in idle", logger);
                         var workplaceHasActiveIdle = workplace.CheckIfWorkplaceHasActivedIdle(logger);
                         var workplaceHasActiveOrder = workplace.CheckIfWorkplaceHasActiveOrder(logger);
+                        var lastOrderWasClosedOffline = workplace.CheckIfLastOrderWasClosedOffline(logger);
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace has active order: " + workplaceHasActiveOrder, logger);
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace has active idle: " + workplaceHasActiveIdle, logger);
-
-                        if (workplaceHasActiveOrder) {
+                        if (!workplaceHasActiveOrder && lastOrderWasClosedOffline) {
+                            LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Creating order from last poweroff closed order", logger);
+                            workplace.CreatePoweroffOrderForWorkplace(logger);
+                            LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_order created", logger);
+                        } else if (workplaceHasActiveOrder) {
                             if (!workplaceHasActiveIdle) {
                                 LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Creating idle", logger);
                                 workplace.CreateIdleForWorkplace(logger, true, workplace.LastStateDateTime);
@@ -528,7 +535,6 @@ namespace terminalServerCore {
             if (name.Length > 0) {
                 if (!_customer.Equals(name)) {
                     _customer = name;
-                    SendEmail("Customer name changed.", logger);
                 }
             }
 
