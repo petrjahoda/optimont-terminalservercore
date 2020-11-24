@@ -4204,7 +4204,8 @@
     ]
   },
   "packageFolders": {
-    "/Users/petrjahoda/.nuget/packages/": {}
+    "/Users/petrjahoda/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
@@ -4215,6 +4216,9 @@
       "packagesPath": "/Users/petrjahoda/.nuget/packages/",
       "outputPath": "/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+      ],
       "configFilePaths": [
         "/Users/petrjahoda/.nuget/NuGet/NuGet.Config"
       ],

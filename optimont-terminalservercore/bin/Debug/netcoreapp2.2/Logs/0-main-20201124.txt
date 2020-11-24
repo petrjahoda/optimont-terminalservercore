@@ -1,0 +1,7 @@
+2020-11-24T10:50:34.2588570+01:00  [INF] 11/24/2020 10:50:34 [ MAIN ] --INF-- Program built at: 2020.2.2.22 (f1c55f6d)
+2020-11-24T10:50:34.2693630+01:00  [INF] 11/24/2020 10:50:34 [ MAIN ] --INF-- Config file already exists. (9563e1c7)
+2020-11-24T10:50:34.5163870+01:00  [INF] 11/24/2020 10:50:34 [ MAIN ] --INF-- Config loaded from file for customer: unactivated software (3903fef3)
+2020-11-24T10:50:35.8313920+01:00  [INF] 11/24/2020 10:50:35 [ MAIN ] --ERR-- Database is unavailable Unable to connect to any of the specified MySQL hosts. (2593731c)
+2020-11-24T10:50:35.8326780+01:00  [INF] 11/24/2020 10:50:35 [ MAIN ] --ERR-- Database became unavailable (4048d6e4)
+2020-11-24T10:50:37.3554120+01:00  [INF] 11/24/2020 10:50:37 [ MAIN ] --ERR-- Cannot send email: Database become unavailable.: Mailbox unavailable. The server response was: 5.1.0 hUy3ki3SXH3qOhUy5kYDoJ authentication failed (261ce372)
+2020-11-24T10:50:37.3573210+01:00  [INF] 11/24/2020 10:50:37 [ MAIN ] --INF-- Cleared old files. (4cf70195)

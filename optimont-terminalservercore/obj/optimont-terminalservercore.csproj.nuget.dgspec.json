@@ -13,6 +13,9 @@
         "packagesPath": "/Users/petrjahoda/.nuget/packages/",
         "outputPath": "/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+        ],
         "configFilePaths": [
           "/Users/petrjahoda/.nuget/NuGet/NuGet.Config"
         ],

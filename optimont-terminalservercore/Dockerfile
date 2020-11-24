@@ -3,4 +3,4 @@ RUN apk update && apk upgrade && apk add bash
 RUN cp /usr/share/zoneinfo/Europe/Prague /etc/localtime
 WORKDIR /publish
 COPY /publish /publish
-ENTRYPOINT dotnet terminalservercore.dll
+ENTRYPOINT dotnet optimont-terminalservercore.dll

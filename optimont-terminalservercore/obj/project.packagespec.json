@@ -6,6 +6,9 @@
     "projectPath": "/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/optimont-terminalservercore.csproj",
     "outputPath": "/Users/petrjahoda/RiderProjects/optimont-terminalservercore/optimont-terminalservercore/obj/",
     "projectStyle": "PackageReference",
+    "fallbackFolders": [
+      "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+    ],
     "originalTargetFrameworks": [
       "netcoreapp2.2"
     ],
