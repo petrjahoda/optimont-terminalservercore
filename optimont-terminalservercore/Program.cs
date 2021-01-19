@@ -18,7 +18,7 @@ using static System.Console;
 
 namespace terminalServerCore {
     internal static class Program {
-        private const string BuildDate = "2020.2.2.22";
+        private const string BuildDate = "2021.1.1.19";
         private const string DataFolder = "Logs";
         internal static string IpAddress;
         internal static string Port;
@@ -461,7 +461,7 @@ namespace terminalServerCore {
                         } else if (workplaceHasActiveOrder) {
                             if (!workplaceHasActiveIdle) {
                                 LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Creating idle", logger);
-                                workplace.CreateIdleForWorkplace(logger, true, workplace.LastStateDateTime);
+                                workplace.CreateIdleForWorkplace(logger, true, DateTime.Now);
                                 workplace.UpdateOrderIdleTable(logger);
                                 LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_idle created", logger);
                                 workplace.UpdateOrderData(logger);
@@ -484,8 +484,7 @@ namespace terminalServerCore {
                                     // workplace.UpdateOrderIdleTable(logger);
                                 }
                             } else {
-                                var actualDate = DateTime.Now;
-                                workplace.CreateIdleForWorkplace(logger, false, actualDate);
+                                workplace.CreateIdleForWorkplace(logger, false, DateTime.Now);
                                 workplace.UpdateOrderIdleTable(logger);
                             }
                         }
