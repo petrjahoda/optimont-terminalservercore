@@ -1244,5 +1244,97 @@ namespace terminalServerCore {
                 connection.Dispose();
             }
         }
+
+        public int GetSecondsFromLastIdle(ILogger logger) {
+            var timeFromLastIdle = 0;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery =
+                    $"select timestampdiff(second, (select DTE from zapsi2.terminal_input_idle where DeviceID={DeviceOid} order by OID desc limit 1), Now()) as result";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        timeFromLastIdle = Convert.ToInt32(reader["result"]);
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem getting data for last idle: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            return timeFromLastIdle;
+        }
+
+        public int GetWorkplaceIdleTime(ILogger logger) {
+            var workplaceIdleTime = 0;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"select IdleFromTime from zapsi2.workplace where DeviceID={DeviceOid} ";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        workplaceIdleTime = Convert.ToInt32(reader["IdleFromTime"]);
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem getting data for last idle: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            return workplaceIdleTime;
+        }
+
+        public DateTime GetLastIdleTimeForWorkplace(ILogger logger) {
+            var lastIdleTime = DateTime.Now;
+            var connection = new MySqlConnection(
+                $"server={Program.IpAddress};port={Program.Port};userid={Program.Login};password={Program.Password};database={Program.Database};");
+            try {
+                connection.Open();
+                var selectQuery = $"select DTE from zapsi2.terminal_input_idle where DeviceID={DeviceOid} order by OID desc limit 1";
+                var command = new MySqlCommand(selectQuery, connection);
+                try {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read()) {
+                        lastIdleTime = Convert.ToDateTime(reader["DTE"]);
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                } catch (Exception error) {
+                    LogError("[ " + Name + " ] --ERR-- Problem getting data for last idle: " + error.Message + selectQuery, logger);
+                } finally {
+                    command.Dispose();
+                }
+                connection.Close();
+            } catch (Exception error) {
+                LogError("[ " + Name + " ] --ERR-- Problem with database: " + error.Message, logger);
+            } finally {
+                connection.Dispose();
+            }
+
+            return lastIdleTime;
+            
+        }
     }
 }

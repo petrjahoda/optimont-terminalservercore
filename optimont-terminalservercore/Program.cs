@@ -18,7 +18,7 @@ using static System.Console;
 
 namespace terminalServerCore {
     internal static class Program {
-        private const string BuildDate = "2021.1.1.19";
+        private const string BuildDate = "2021.1.2.1";
         private const string DataFolder = "Logs";
         internal static string IpAddress;
         internal static string Port;
@@ -434,14 +434,6 @@ namespace terminalServerCore {
                             workplace.CreateOrderForWorkplace(logger);
                             LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_order created", logger);
                         }
-
-                        if (workplaceHasActiveIdle) {
-                            // LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Closing idle", logger);
-                            // var actualDate = DateTime.Now;
-                            // workplace.CloseIdleForWorkplace(actualDate, logger);
-                            // LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_idle closed", logger);
-                        }
-
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Active order: " + workplaceHasActiveOrder, logger);
                         if (workplaceHasActiveOrder) {
                             LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Updating data for order", logger);
@@ -460,33 +452,58 @@ namespace terminalServerCore {
                             LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_order created", logger);
                         } else if (workplaceHasActiveOrder) {
                             if (!workplaceHasActiveIdle) {
-                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Creating idle", logger);
-                                workplace.CreateIdleForWorkplace(logger, true, DateTime.Now);
-                                workplace.UpdateOrderIdleTable(logger);
-                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_idle created", logger);
+                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- State is idle, but no open terminal idle, checking for last idle DTE", logger);
+                                var workplaceIdleTime = workplace.GetWorkplaceIdleTime(logger);
+                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace idle time in seconds: "+ workplaceIdleTime, logger);
+                                var timeFromLastIdle = workplace.GetSecondsFromLastIdle(logger);
+                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Seconds from last idle DTE: "+ timeFromLastIdle, logger);
+                                if (timeFromLastIdle > workplaceIdleTime) {
+                                    LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Seconds from last idle are more than workplace idle time, checking last idle DTE", logger);
+                                    var lastIdleTime = workplace.GetLastIdleTimeForWorkplace(logger);
+                                    if (lastIdleTime > workplace.LastStateDateTime) {
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Idle DTE is newer than state DTE", logger);
+                                        workplace.CreateIdleForWorkplace(logger, true, lastIdleTime);
+                                        workplace.UpdateOrderIdleTable(logger);
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_idle created", logger);
+                                    } else {
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- State DTE is newer than idle DTE", logger);
+                                        workplace.CreateIdleForWorkplace(logger, true, workplace.LastStateDateTime);
+                                        workplace.UpdateOrderIdleTable(logger);
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_idle created", logger);
+                                    }
+                                } else {
+                                    LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Seconds from last idle are less than workplace idle time", logger);
+                                }
+                                
                                 workplace.UpdateOrderData(logger);
-                            } else {
-                                // if (workplace.WorkplaceIdleId == 2) {
-                                //     var actualDate = DateTime.Now;
-                                //     workplace.CloseIdleForWorkplace(actualDate, logger);
-                                //     workplace.CreateIdleForWorkplace(logger, true, workplace.LastStateDateTime);
-                                //     workplace.UpdateOrderIdleTable(logger);
-                                // }
-
+                            } else { 
                                 workplace.UpdateOrderData(logger);
                             }
                         } else {
-                            if (workplaceHasActiveIdle) {
-                                if (workplace.WorkplaceIdleId != 2) {
-                                    // var actualDate = DateTime.Now;
-                                    // workplace.CloseIdleForWorkplace(actualDate, logger);
-                                    // workplace.CreateIdleForWorkplace(logger, false, actualDate);
-                                    // workplace.UpdateOrderIdleTable(logger);
+                            if (!workplaceHasActiveIdle) {
+                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- State is idle, but no open terminal idle, checking for last idle DTE", logger);
+                                var workplaceIdleTime = workplace.GetWorkplaceIdleTime(logger);
+                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace idle time in seconds: "+ workplaceIdleTime, logger);
+                                var timeFromLastIdle = workplace.GetSecondsFromLastIdle(logger);
+                                LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Seconds from last idle DTE: "+ timeFromLastIdle, logger);
+                                if (timeFromLastIdle > workplaceIdleTime) {
+                                    LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Seconds from last idle are more than workplace idle time, checking last idle DTE", logger);
+                                    var lastIdleTime = workplace.GetLastIdleTimeForWorkplace(logger);
+                                    if (lastIdleTime > workplace.LastStateDateTime) {
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Idle DTE is newer than state DTE", logger);
+                                        workplace.CreateIdleForWorkplace(logger, false, lastIdleTime);
+                                        workplace.UpdateOrderIdleTable(logger);
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_idle created", logger);
+                                    } else {
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- State DTE is newer than idle DTE", logger);
+                                        workplace.CreateIdleForWorkplace(logger, false, workplace.LastStateDateTime);
+                                        workplace.UpdateOrderIdleTable(logger);
+                                        LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Terminal_input_idle created", logger);
+                                    }
+                                } else {
+                                    LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Seconds from last idle are less than workplace idle time", logger);
                                 }
-                            } else {
-                                workplace.CreateIdleForWorkplace(logger, false, DateTime.Now);
-                                workplace.UpdateOrderIdleTable(logger);
-                            }
+                            } 
                         }
                     } else if (workplace.ActualStateType == StateType.PowerOff) {
                         LogDeviceInfo("[ " + workplace.Name + " ] --INF-- Workplace offline", logger);
